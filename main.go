@@ -15,6 +15,11 @@ func main() {
 
 	token := os.Getenv("DISCORD_TOKEN")
 	channelId := os.Getenv("DISCORD_CHANNEL_ID")
+	channelPattern := os.Getenv("DISCORD_CHANNEL_PATTERN")
+
+	if channelPattern == "" {
+		channelPattern = "covid-{begin}➔{end}"
+	}
 
 	if token == "" || channelId == "" {
 		log.Fatal("Both DISCORD_TOKEN and DISCORD_CHANNEL_ID environment variables are required (.env supported).")
@@ -40,7 +45,7 @@ func main() {
 
 	edit := discordgo.ChannelEdit{
 		Name: GenerateChannelName(
-			"covid-{begin}➔{end}",
+			channelPattern,
 			time.Date(2019, time.November, 16, 0, 0, 0, 0, loc),
 			time.Now().In(loc),
 		),

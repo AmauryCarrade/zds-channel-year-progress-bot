@@ -5,11 +5,15 @@ This ~~simple~~ stupid bot updates a Discord channel name to match the current y
 Build with `go build`, then:
 
 ```
-./discord-channel-year-bot -t TOKEN -c CHANNEL_ID
+DISCORD_TOKEN=TOKEN DISCORD_CHANNEL_ID=CHANNEL_ID ./discord-channel-year-bot
 ```
 
-where `TOKEN` is the bot token, and CHANNEL_ID is the channel to update. The channel name format
-is not (yet?) configurable: it's always `covid-{begin}➔{end}`, as in the title, where `{begin}` is
-the date of the beginning of the COVID-19 pandemic.
+The following environment variables are available (can be provided in a `.env` file too):
+- `DISCORD_TOKEN`: the Discord bot token (required);
+- `DISCORD_CHANNEL_ID`: the channel ID to update (required);
+- `DISCORD_CHANNEL_PATTERN`: the channel name pattern, where `{begin}` is replaced by the beginning date year
+  percentage, and `{end}`, by the end date year percentage (default `covid-{begin}➔{end}`).
 
-Just, don't ask. (This is also a toy project to learn Go, Docker, and some k8s integration.)
+The beginning date is the one of the beginning of the COVID-19 pandemic.
+
+_Just, don't ask. (This is also a toy project to learn Go, Docker, and some k8s integration.)_
