@@ -20,14 +20,28 @@ func YearPercentage(date time.Time) float64 {
 	return float64(duration) / float64(yearDuration)
 }
 
+const standardComma = "."
+const discordifiedComma = "،"
+
+// DiscordifyFloat converts a float64 to string so that the resulting
+// string can be used in a channel name. Discord does not allow comas in
+// channel names, so we use an alternative unicode character to represent
+// them. We must, too, specify the precision wanted (number of digits after
+// the so-called comma), because channel names have limitations.
+func DiscordifyFloat(number float64, precision int) string {
+	return strings.Replace(
+		fmt.Sprintf(fmt.Sprintf("%%.%df", precision), number), standardComma, discordifiedComma, -1,
+	)
+}
+
 // GenerateChannelName computes a channel name displaying years in decimal form.
 // As example, 19.87-to-21.98 where 19/21 are the years, and the decimal parts, where
 // we are in the year.
 // The first arg is the pattern we should output, where {begin} is replaced by the computed
 // decimal year corresponding to the begin argument, and the same for {end}.
 func GenerateChannelName(pattern string, begin, end time.Time) string {
-	beginPercentage := fmt.Sprintf("%.2f", float64(begin.Year()-2000)+YearPercentage(begin))
-	endPercentage := fmt.Sprintf("%.2f", float64(end.Year()-2000)+YearPercentage(end))
+	beginPercentage := DiscordifyFloat(float64(begin.Year()-2000)+YearPercentage(begin), 2)
+	endPercentage := DiscordifyFloat(float64(end.Year()-2000)+YearPercentage(end), 2)
 
 	r := strings.NewReplacer("{begin}", beginPercentage, "{end}", endPercentage)
 	return r.Replace(pattern)

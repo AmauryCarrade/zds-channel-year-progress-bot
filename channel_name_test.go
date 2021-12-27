@@ -44,6 +44,29 @@ func TestYearPercentage(t *testing.T) {
 	})
 }
 
+func TestDiscordifyFloat(t *testing.T) {
+	assertConversion := func(t testing.TB, number float64, precision int, want string) {
+		t.Helper()
+		got := DiscordifyFloat(number, precision)
+
+		if got != want {
+			t.Errorf("got %q, want %q", got, want)
+		}
+	}
+
+	t.Run("Number with 2-digits precision", func(t *testing.T) {
+		assertConversion(t, 21.22147, 2, "21،22")
+	})
+
+	t.Run("Number with 3-digits precision", func(t *testing.T) {
+		assertConversion(t, 21.22167, 3, "21،222")
+	})
+
+	t.Run("Round number with 3-digits precision", func(t *testing.T) {
+		assertConversion(t, 21.0000000, 3, "21،000")
+	})
+}
+
 func TestGenerateChannelName(t *testing.T) {
 	loc, err := time.LoadLocation("Europe/Paris")
 	if err != nil {
@@ -55,9 +78,9 @@ func TestGenerateChannelName(t *testing.T) {
 		time.Date(2019, time.November, 16, 0, 0, 0, 0, loc),
 		time.Date(2021, time.December, 26, 0, 0, 0, 0, loc),
 	)
-	expected := "covid-19.87➔21.98"
+	want := "covid-19،87➔21،98"
 
-	if got != expected {
-		t.Errorf("got %q, expected %q", got, expected)
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
 	}
 }
