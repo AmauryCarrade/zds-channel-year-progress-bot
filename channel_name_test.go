@@ -31,6 +31,12 @@ func TestYearPercentage(t *testing.T) {
 		assertPercentage(t, got, want)
 	})
 
+	t.Run("end of the year", func(t *testing.T) {
+		got := YearPercentage(time.Date(2021, time.December, 31, 23, 59, 59, 999999, loc))
+		want := .9999999999
+		assertPercentage(t, got, want)
+	})
+
 	t.Run("non-leap year", func(t *testing.T) {
 		got := YearPercentage(time.Date(2021, time.February, 4, 1, 20, 0, 0, loc))
 		want := .093300
@@ -54,16 +60,20 @@ func TestDiscordifyFloat(t *testing.T) {
 		}
 	}
 
-	t.Run("Number with 2-digits precision", func(t *testing.T) {
+	t.Run("Number with 2-digits truncation", func(t *testing.T) {
 		assertConversion(t, 21.22147, 2, "21،22")
 	})
 
-	t.Run("Number with 3-digits precision", func(t *testing.T) {
-		assertConversion(t, 21.22167, 3, "21،222")
+	t.Run("Number with 3-digits truncation", func(t *testing.T) {
+		assertConversion(t, 21.22167, 3, "21،221")
 	})
 
-	t.Run("Round number with 3-digits precision", func(t *testing.T) {
+	t.Run("Round number with 3-digits truncation", func(t *testing.T) {
 		assertConversion(t, 21.0000000, 3, "21،000")
+	})
+
+	t.Run("Round number with 3-digits truncation", func(t *testing.T) {
+		assertConversion(t, 21.999999, 3, "21،999")
 	})
 }
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"strings"
 	"time"
 )
@@ -26,11 +27,13 @@ const discordifiedComma = "،"
 // DiscordifyFloat converts a float64 to string so that the resulting
 // string can be used in a channel name. Discord does not allow comas in
 // channel names, so we use an alternative unicode character to represent
-// them. We must, too, specify the precision wanted (number of digits after
+// them. We must, too, specify the truncation wanted (number of digits after
 // the so-called comma), because channel names have limitations.
-func DiscordifyFloat(number float64, precision int) string {
+func DiscordifyFloat(number float64, truncation int) string {
+	truncationFactor := math.Pow(10, float64(truncation))
+
 	return strings.Replace(
-		fmt.Sprintf(fmt.Sprintf("%%.%df", precision), number), standardComma, discordifiedComma, -1,
+		fmt.Sprintf(fmt.Sprintf("%%.%df", truncation), float64(int(number*truncationFactor))/truncationFactor), standardComma, discordifiedComma, -1,
 	)
 }
 
