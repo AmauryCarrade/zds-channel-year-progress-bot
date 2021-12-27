@@ -2,7 +2,10 @@ module discord-channel-year-bot
 
 go 1.17
 
-require github.com/bwmarrin/discordgo v0.23.2
+require (
+	github.com/bwmarrin/discordgo v0.23.2
+	github.com/joho/godotenv v1.4.0
+)
 
 require (
 	github.com/gorilla/websocket v1.4.0 // indirect

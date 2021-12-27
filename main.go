@@ -1,43 +1,38 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/joho/godotenv"
+	"log"
 	"os"
 	"time"
 )
 
-var (
-	Token   string
-	Channel string
-)
-
-func init() {
-	flag.StringVar(&Token, "t", "", "Discord bot token")
-	flag.StringVar(&Channel, "c", "", "Discord channel ID")
-	flag.Parse()
-
-	if Token == "" || Channel == "" {
-		flag.Usage()
-		os.Exit(1)
-	}
-}
-
 func main() {
+	// Don't care about error as if it doesn't load it's fine as long as regular env vars are used.
+	err := godotenv.Load(".env")
+
+	token := os.Getenv("DISCORD_TOKEN")
+	channelId := os.Getenv("DISCORD_CHANNEL_ID")
+
+	if token == "" || channelId == "" {
+		log.Fatal("Both DISCORD_TOKEN and DISCORD_CHANNEL_ID environment variables are required (.env supported).")
+	}
+
 	loc, err := time.LoadLocation("Europe/Paris")
 	if err != nil {
 		fmt.Println("Unable to load location", err)
 		return
 	}
 
-	dg, err := discordgo.New("Bot " + Token)
+	dg, err := discordgo.New("Bot " + token)
 	if err != nil {
 		fmt.Println("Error while creating Discord session", err)
 		return
 	}
 
-	channel, err := dg.Channel(Channel)
+	channel, err := dg.Channel(channelId)
 	if err != nil {
 		fmt.Println("Error while loading channel", err)
 		return
@@ -54,7 +49,7 @@ func main() {
 		Position: channel.Position,
 	}
 
-	_, err = dg.ChannelEditComplex(Channel, &edit)
+	_, err = dg.ChannelEditComplex(channelId, &edit)
 	if err != nil {
 		fmt.Println("Error while editing channel", err)
 		return
