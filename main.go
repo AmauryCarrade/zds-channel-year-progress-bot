@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"os"
 	"time"
 )
 
@@ -15,6 +16,12 @@ var (
 func init() {
 	flag.StringVar(&Token, "t", "", "Discord bot token")
 	flag.StringVar(&Channel, "c", "", "Discord channel ID")
+	flag.Parse()
+
+	if Token == "" || Channel == "" {
+		flag.Usage()
+		os.Exit(1)
+	}
 }
 
 func main() {
